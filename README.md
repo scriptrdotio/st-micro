@@ -1,8 +1,4 @@
 # st-micro
- 
-Simple dashboard. Application receives MQTT messages sent by an application deployed on the Everyware Gateway. Messages are processes and alerts are sent based on rules. Alerts are saved as documents. The dashboard allows sending commands to the device and changing some of its custom attributes.
-  
-  It can take static value or be synced to a Real-time Communication. 
 
 ## Requirements:
   
