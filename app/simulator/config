@@ -1,0 +1,15 @@
+var states = ["LOCKED", "UNLOCKED"];
+var tampered = ["true", "false"];
+
+var data = {
+    "group":  ["acme"],
+    "city": ["Montreal"],
+    "country": ["Canada"],
+    "state": ["LOCKED", "UNLOCKED"],
+    "source": ["nebula", "orbiwise"],
+    "type" : ["Residential", "Offices", "Commercial", "Government"],
+ 	"building" : ["Skyreach Tower"],
+ 	"by" : ["Judith", "Norma", "Ernest", "Theresa", "Tom", "Eric", "Jim", "Ryan", "Oliver","Justin", "Kevin", "John", "Marvet"]
+}
+
+var extraData = ["batteryLevel", "outsideTemperature", "tampered", "tamperedDate", "humidity", "temperature", "pressure", "accelerometer", "magnetic"];
