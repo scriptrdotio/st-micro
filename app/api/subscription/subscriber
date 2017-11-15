@@ -1,0 +1,110 @@
+/**
+ * This script is subscribed to the "requestChannel" to which the websocket node in the node-red sample application is publishing
+ * The aforementioned applicaton simply reads messages from the device's mqtt topic and sends them through WS
+ * This script is also subscribed to the "watson" channel that has a binding with the watson_nucleo endpoint. The latter is actually
+ * subscribed to the nucleo device's mqtt topic on waston iot, therefore, the current script can directly consume messages from the topic
+ * Once the current script receives the payload, it parses it and saves the data using an instance of DeviceManager
+ */ 
+systemLogger.setLevel("OFF");
+var log = require("log"); log.setLevel("info");
+var deviceManager = require("/app/entities/devicemanager");
+
+var deviceProcessor = require("app/entities/deviceprocessor");
+var deviceGenerator = require("app/simulator/utils/dataGenerator");
+var deviceManager = require("app/entities/devicemanager");
+var groupManager = require("app/entities/groupmanager");
+var config = require("app/simulator/config");
+var utils = require("app/entities/utils")
+var mapper = require("app/entities/watson/mapper");
+var _ = require("modules/underscore/underscore.js")._;
+
+// read data from request rawBody or body property
+
+var body = request.body ? request.body.d : request.rawBody;
+var data;
+if(body){
+   data = typeof(data) == "string" ? JSON.parse(body).d : body;
+}
+if(data == null){
+    if(request.body != null){
+        data = request.body;
+    }else if(request.parameters.body){
+        data = request.parameters.body;
+    } else {
+        data = request.parameters;
+    }
+    if(typeof data == 'string'){
+        try{
+            data = JSON.parse(data);   
+        }catch(e){
+            return "INVALID OR MISSING PARAMETER";
+        }
+    }
+}
+
+log.info("/app/api/subscription/subscriber received the following payload \n" + JSON.stringify(data));
+
+//Assuming we are getting data
+try {
+    
+    var deviceId = data.myName || "nucleo";
+    
+    var entry = {};
+    
+    var deviceDefinition = deviceManager.getDeviceDefinition(deviceId);
+	
+    if(deviceDefinition == null) {
+        entry = deviceGenerator.generateRandomDevices(
+            {"lat": 45.5602805, "lng": -73.8521324}, 
+            200, 
+            1, 
+            config.addresses, 
+            config.types, 
+            config.groups)[0];
+        
+    log.info("Create Device Definition: "+JSON.stringify(entry))
+    } else {
+        entry.latitude = deviceDefinition.latitude;
+        entry.longitude = deviceDefinition.longitude;
+        entry.building = deviceDefinition.building;
+        entry.city = deviceDefinition.city;
+        entry.country = deviceDefinition.country;
+        entry.type = deviceDefinition.type;
+        entry.group = deviceDefinition.group;
+        entry.source = deviceDefinition.source;
+     }
+     var accel = {
+         x: data.Acc_X,
+         y: data.Acc_Y,
+         z: data.Acc_Z
+     }
+     entry["accelerometer"] = JSON.stringify(accel);
+    
+     var magnetic = {
+         x: data.MAG_X,
+         y: data.MAG_Y,
+         z: data.MAG_Z
+     }
+     entry["magnetic"] = JSON.stringify(magnetic);
+     
+    
+     var dataMapping = mapper.mapIt(data);
+    _.extendOwn(entry, dataMapping);
+    
+     log.info("before top up: "+JSON.stringify(entry))
+     var device = JSON.parse(JSON.stringify(utils.topUpDeviceEntry(entry, config)));
+     log.info("after top up: "+JSON.stringify(device))
+     
+     if(deviceDefinition == null) {
+         //Save device definition
+        deviceManager.saveDeviceDefinition(device);
+        //Add device to group
+        groupManager.saveGroupDevice({"id": device.group, "device": device.id});
+     }
+      deviceProcessor.processEntry(device);
+    
+    
+}catch(exception) {
+	return exception;    
+}
+

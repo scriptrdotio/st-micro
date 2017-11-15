@@ -1,0 +1,1 @@
+{"acl":{"read":"nobody","write":"nobody","execute":"group:acme;group:scriptrio;group:future_electronics"},"contentType":"application\/vnd.scriptr-javascript"}

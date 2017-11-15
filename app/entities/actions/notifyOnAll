@@ -1,0 +1,14 @@
+function execute(lock, request) {
+  
+  var sendMail =  require("./emailOnUnlock");
+  sendMail.execute(lock, request)
+
+  var sendSms = require("./smsOnUnlock");
+  sendSms.execute(lock, request);
+  
+  var sendMail =  require("./emailOnTampered");
+  sendMail.execute(lock, request)
+
+  var sendSms = require("./smsOnTampered");
+  sendSms.execute(lock, request);
+}

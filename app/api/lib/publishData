@@ -1,0 +1,22 @@
+//publish the received data to a channel
+//published data is formatted first using locks/api/lib/dataFormatter	
+var log = require("log");
+log.setLevel("INFO");
+var formatter = require("locks/api/lib/dataFormatter");
+function publishData(data, channel){
+  
+  	var config = require("locks/config");
+  	var message = formatter.format([data]);
+  	log.info("message: " +JSON.stringify(message));
+    //publish data in same format as an api response invoked over socket
+  	var data = {};
+    data["id"] = "everyone-main-live";
+    data["result"] = message; 
+    log.info("data: " +JSON.stringify(data));
+  	var publishResult = publish(channel, JSON.stringify(data));
+    if (publishResult.metadata.status == "failure"){
+      log.error("publishData.publishData(): publish failed on channel " + channel + "\n" + JSON.stringify(publishResult) +  "\nwith payload:\n" + JSON.stringify(data));
+    }
+    
+ 	return data;
+}

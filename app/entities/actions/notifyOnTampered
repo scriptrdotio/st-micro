@@ -1,0 +1,7 @@
+function execute(lock, request) {
+  var sendMail =  require("./emailOnTampered");
+  sendMail.execute(lock, request)
+
+  var sendSms = require("./smsOnTampered");
+  sendSms.execute(lock, request);
+}

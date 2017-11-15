@@ -1,0 +1,30 @@
+var notificationManager = require("app/entities/notificationmanager");
+var smsmodule = require("modules/twilio/sms/smsclient");
+var config = require("app/entities/config");
+
+function execute(device, request){
+    var notifications_settings =  notificationManager.getDeviceNotificationSettings(device.id);
+    if(notifications_settings && notifications_settings["mobiles"]) {
+        var mobiles = notifications_settings["mobiles"];
+        for(var i = 0; i < mobiles.length; i++) {
+        	sendSmsOnUnlock(request, device, mobiles[i]["text"]);
+        }
+     } else {
+		sendSmsOnUnlock(request, device, config.twilio.to)
+     }
+  return true;
+}
+
+function sendSmsOnUnlock(request, device, mobile) {
+    if(device.state == "UNLOCKED"){
+        try {
+          log.info("send sms");
+          if(request.user.id != null) {
+              var smsClient = new smsmodule.TwilioSMS(config.twilio);
+              return smsClient.send({"number":  mobile, "message":  "Container with  bic code '"+ device.id +"' has been unlocked by user: '" + (request.user.id == null? "system" : request.user.id) + "'"});
+        	}
+        }catch(exception){
+          return exception;
+        }
+    }
+}

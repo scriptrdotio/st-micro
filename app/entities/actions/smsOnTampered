@@ -1,0 +1,31 @@
+
+var notificationManager = require("app/entities/notificationmanager");
+var smsmodule = require("modules/twilio/sms/smsclient");
+var config = require("app/entities/config");
+
+function execute(device, request){
+    var notifications_settings =  notificationManager.getDeviceNotificationSettings(device.id);
+    if(notifications_settings && notifications_settings["mobiles"]) {
+        var mobiles = notifications_settings["mobiles"];
+        for(var i = 0; i < mobiles.length; i++) {
+          sendSmsOnTampered(request, device, mobiles[i]["text"]);
+        }
+     } else {
+    	  sendSmsOnTampered(request, device, config.twilio.to)
+     }
+  return true;
+}
+
+function sendSmsOnTampered(request, device, mobile) {
+    if(device.tampered == true){
+		//send sms 
+        try {
+          log.info("send sms");
+          var smsClient = new smsmodule.TwilioSMS(config.twilio);
+          return smsClient.send({"number":  mobile, "message": "Container with bic code '"+ device.id +"' has been tampered with."});
+        }catch(exception){
+          return exception;
+        }
+        
+    }
+}

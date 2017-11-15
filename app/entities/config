@@ -1,0 +1,24 @@
+var twilio = {
+    "accountSID": "",
+    "authToken": "",
+    "from": "",
+    "to": ""
+}
+
+var email = {
+    "TO": "",
+    "FROM": "ST MICRO",
+    "BODY": ""
+}
+
+var watson = {
+        url: "",
+    	username: "",
+        token: "",
+        maxWait: 2000
+    };
+    
+    
+var accountKey = ""
+var accountSecret = ""
+    

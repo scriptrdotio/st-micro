@@ -1,0 +1,30 @@
+var deviceManager = require("app/entities/devicemanager");
+var utils = require("app/entities/utils");
+var log = require("log")
+log.setLevel("INFO")
+//check if device has associated rule and execute it
+function process(device, request){
+    
+  var deviceDefinition = deviceManager.getDeviceDefinition(device.id)
+  log.info("Device in rules/apply: deviceId "+JSON.stringify(device.id))
+  log.info("Device in rules/apply:  deviceDefinition "+JSON.stringify(deviceDefinition))
+  try{
+    var rule = require("/app/entities/rules/"+deviceDefinition.group+"/asset_" + device.id);  
+    log.info("Start Proccessing Specific device rule")
+    rule.execute(device, request);
+    log.info("End Proccessing Specific device rule");
+      
+    log.info("Start Proccessing Specific Temperature rule")
+    return utils.executeDecisionTable("app/entities/rules/"+deviceDefinition.group+"/asset_temperature_" + device.id, device);
+    log.info("End Proccessing Specific Temperature rule")
+  }catch(e){
+    var rule = require("/app/entities/rules/"+deviceDefinition.group+"/asset_generic");  
+    log.info("Start Proccessing Generic device rule")
+    rule.execute(device, request);
+    log.info("End Proccessing Generic device rule")
+   
+    log.info("Start Proccessing Generic Temperature rule")
+    return utils.executeDecisionTable("app/entities/rules/"+deviceDefinition.group+"/asset_temperature_generic", device);
+    log.info("End Proccessing Generic Temperature rule")
+  }
+}

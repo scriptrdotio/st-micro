@@ -1,0 +1,7 @@
+function execute(lock, request) {
+  var sendMail =  require("./emailOnUnlock");
+  sendMail.execute(lock, request)
+
+  var sendSms = require("./smsOnUnlock");
+  sendSms.execute(lock, request);
+}

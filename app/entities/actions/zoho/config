@@ -1,0 +1,16 @@
+TO_EMAIL = "multitech-demo@scriptr.io";
+FROM_NAME = "Telematics Demo";
+
+var _templates = {
+  TEMPERATURE_TICKET: {
+    subject: 'Device <%= deviceId %>: High Temperature!',
+    body: 'Device with <%= deviceId %> has exceeded temperature threshold.'
+  },
+  LIGHT_TICKET: {
+    subject: 'Device <%= deviceId %>: Too much light!',
+    body: 'Device with id <%= deviceId %> has exceeded light threshold.'
+  }
+}
+function getTemplate(event){
+  return _templates[event];
+}

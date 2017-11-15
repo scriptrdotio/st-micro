@@ -1,0 +1,91 @@
+//Get payload parameters
+var pl = null;
+var requestBody = request.body;
+if (!requestBody) {
+	pl = request.parameters.payload;
+	pl = JSON.parse(pl);
+} else {
+	pl = requestBody.payload;
+}
+
+//START TABLE DECISION CODE
+function execute(pl) {
+
+var decision = [];
+
+//PRESCRIPT START
+var log = require("log");
+log.setLevel("INFO");
+log.info(JSON.stringify(pl));
+// available data: "latitude","longitude","building","city", "country","type" ,"group","source", "id","temperature","humidity","state","by","tampered","tamperDate","batteryLevel","outsideTemperature","pressure","creationDate
+//PRESCRIPT END
+
+//RULES EVALUATION START
+if(typeof pl != "object") {
+  return[];
+} else { 
+	  if((pl != null && pl["temperature"] != undefined && pl["temperature"] > 30)){
+       decision.push({ "action": "alert","RECORD_ENTRY": "true" });
+	} 
+}
+//RULES EVALUATION END
+
+//POSTSCRIPT START
+var notificationManager = require("app/entities/notificationmanager");
+var smsmodule = require("modules/twilio/sms/smsclient");
+var config = require("app/entities/config");
+
+if(decision[0] && decision[0].action){
+  sendAlert(pl["id"], decision[0].action);
+}
+
+function sendAlert(id, action) {
+    var body = "Please note that we have detected temperature values above defined threshold. Temperature value is: "+pl["temperature"]+".";
+    var subject = pl["id"]+": Temperature Alert";
+    if(action == "alert"){
+      var notifications_settings =  notificationManager.getDeviceNotificationSettings(id);
+      if(notifications_settings) {
+        var mobiles = notifications_settings["mobiles"];
+        var emails = notifications_settings["emails"];
+            // Send Email
+            for(var i = 0; i < emails.length; i++){
+                sendMail(emails[i], config.email.FROM, subject, body);
+            }
+            log.info("SEND EMAILS to: "+JSON.stringify(emails))
+            log.info("SEND SMS to: "+JSON.stringify(mobiles))
+            // Send SMS
+            for(var y = 0; y < mobiles.length; y++){
+                try {
+                    var smsClient = new smsmodule.TwilioSMS();
+                    smsClient.send({"number": mobiles[y], "message": body});
+                }catch(exception){
+                    return exception;
+                }
+            }
+        }
+    } 
+}
+
+return decision;
+
+//POSTSCRIPT END
+
+}
+//Check if value is "in" or is "not in" array
+//return true or false
+function evalArrayOperation(value, operator,  array) {
+	if(operator == "in") {
+		return (array.indexOf(value)>-1);
+	} else {
+		return (array.indexOf(value) == -1) ;
+	} 
+}
+
+//isAny function, when condition expression is not important
+function isAny(param) {
+	return true;
+}
+
+//START_REST_CALL 
+return execute(pl);
+//END_REST_CALL

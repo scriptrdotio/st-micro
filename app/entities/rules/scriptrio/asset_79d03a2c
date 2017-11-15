@@ -1,0 +1,5 @@
+var device;
+var request;
+
+function execute(device, request) {
+  return require("app/entities/actions/notifyOnTampered").execute(device, request)}

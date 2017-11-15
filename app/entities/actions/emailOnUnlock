@@ -1,0 +1,31 @@
+var notificationManager = require("app/entities/notificationmanager");
+var config = require("app/entities/config");
+var log = require("log");
+log.setLevel("INFO");
+
+function execute(device, request){
+    var notifications_settings =  notificationManager.getDeviceNotificationSettings(device.id);
+    if(notifications_settings && notifications_settings["emails"]) {
+        var emails = notifications_settings["emails"]
+        for(var i = 0; i < emails.length; i++) {
+          sendEmailOnUnlock(request, device, emails[i]["text"], config.email.FROM);
+        }
+     } else {
+        sendEmailOnUnlock(request, device, config.email.TO, config.email.FROM)
+     }
+  return true;
+}
+
+function sendEmailOnUnlock(request, device, toEmail, fromEmail) {
+    if(request.user.id != null) { 
+    	if(device.state == "UNLOCKED") { 
+        var body = "Please note that we have detected an unlock event on container: "+device["id"]+" by: "+(request.user.id == null? "system" : request.user.id)+ ".";
+        var subject = device["id"]+": Unlock Alert";
+      	log.info(sendMail(toEmail, fromEmail, subject, body));
+         
+        }else{
+            log.info(device.id + " is now locked");
+        }
+    }
+  	
+}

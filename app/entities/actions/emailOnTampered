@@ -1,0 +1,25 @@
+var notificationManager = require("app/entities/notificationmanager");
+var config = require("app/entities/config");
+var log = require("log");
+log.setLevel("INFO");
+
+function execute(device, request){
+    var notifications_settings =  notificationManager.getDeviceNotificationSettings(device.id);
+    if(notifications_settings && notifications_settings["emails"]) {
+        var emails = notifications_settings["emails"]
+        for(var i = 0; i < emails.length; i++) {
+          sendEmailOnTampered(request, device, emails[i]["text"], config.email.FROM);
+        }
+     } else {
+        sendEmailOnTampered(request, device, config.email.TO, config.email.FROM)
+     }
+  return true;
+}
+
+function sendEmailOnTampered(request, device, toEmail, fromEmail) {
+  	if(device.tampered == true){
+        var body = "Please note that we have detected a tampering attempt on container: "+device.id+".";
+        var subject = device["id"]+": Tampering Alert";
+      	log.info(sendMail(toEmail, fromEmail, subject, body));
+    }
+}
