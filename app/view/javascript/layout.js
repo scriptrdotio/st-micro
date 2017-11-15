@@ -29,7 +29,8 @@ var headerItems = {
     //"logo": "",
     "items": [],
     "subitems": [
-        {"id":"1", "iconClass":"fa fa-bell", "label": "Notification Rules", "route":"#/notifications", "active":"false"} 
+        {"id":"1", "iconClass":"fa fa-bell", "label": "Notification Rules", "route":"#/notifications", "active":"false"},
+        {"id":"2", "iconClass":"fa fa-users", "label":"User Management", "route":"#/userManagement", "active":"true", "roles":["management"]}
     ], 
     "logout": {"icon": "fa fa-sign-out", "label": "Logout", "route":"#/logout"}
 };
@@ -42,6 +43,7 @@ var routingItems = {
     {"route": "historical", "template": "/app/view/html/views/dashboard/historical.html"},
     {"route": "tickets", "template": "/app/view/html/views/dashboard/tickets.html"},
  //   {"route": "threshold", "template": "/app/view/html/views/dashboard/threshold.html"},
+    {"route": "userManagement", "template": "/app/view/html/views/management/userManagement.html"},   
     {"route": "notifications", "template": "/app/view/html/views/notifications/notifications.html", controller: "notificationCtrl as vm"},
     {"route": "batteryLevel", "template": "/app/view/html/views/reports/batteryLevel.html", controller: "batteryLevelCtrl as vm"},  
     {"route": "highTemperature", "template": "/app/view/html/views/reports/temperature.html", controller: "temperatureLevelCtrl as vm"},    
