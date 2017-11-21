@@ -1,4 +1,4 @@
-var token = ""
+var token = "RDFDNTRFRkFEMA=="
 
 var login = {
    redirectTarget: "/app/view/html/index.html",
@@ -14,6 +14,6 @@ var wssConfig = ["wsClientProvider",function (wsClientProvider) {
 }];
 
 var httpsConfig = ["httpClientProvider",function (httpClientProvider) {
-    httpClientProvider.setBaseUrl("https://sub-domain.scriptrapps.io");
+    httpClientProvider.setBaseUrl("https://stmicro-demo.scriptrapps.io");
     httpClientProvider.setToken(token);
 }]
