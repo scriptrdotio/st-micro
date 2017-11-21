@@ -40,7 +40,8 @@ if(groupResult.metadata.status == "failure"){
 var user = {
     login : "demo",
     password: "demo",
-    name : "demo"
+    name : "demo",
+    groups: "acme"
 }
 var userResult = apsdb.callApi("SaveUser", user, null);
 if(userResult.metadata.status == "failure"){
@@ -65,7 +66,7 @@ var serviceName = "GitCheckout";
 
 // UIComponents
 var moduleName = "UIComponents";
-var path = 'UIComponents/UIComponents'; 
+var path = '/UIComponents'; 
 var repo = "UIComponents";
 var owner = "scriptrdotio";
 var result = checkout(moduleName,path,repo,owner);
