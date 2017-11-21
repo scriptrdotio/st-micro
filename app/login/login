@@ -1,0 +1,7 @@
+var http = require("http");
+var login = require("app/entities/login/login");
+var id= request.parameters["id"];
+var password = request.parameters["password"];
+
+
+return login.verifyCredentials(id,password);
