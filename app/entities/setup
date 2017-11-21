@@ -1,0 +1,162 @@
+var pubsub = require("pubsub");
+// create channels
+var options = {
+  "subscribeACL": "authenticated",
+  "publishACL": "authenticated"
+}
+var channelStatus = "success";
+var groupStatus = "success";
+var userStatus = "success";  
+var configStatus = "success";
+var response = {}
+
+var result = pubsub.createChannel("responseChannel", options);
+if(result.metadata.status == "failure" && result.metadata.errorCode != "DUPLICATE_CHANNEL"){
+  channelStatus = "failure";
+}
+var result = pubsub.createChannel("requestChannel", options);
+if(result.metadata.status == "failure" && result.metadata.errorCode != "DUPLICATE_CHANNEL"){
+  channelStatus = "failure";
+}
+
+var result = pubsub.createChannel("responseChannel_acme", options);
+if(result.metadata.status == "failure" && result.metadata.errorCode != "DUPLICATE_CHANNEL"){
+  channelStatus = "failure";
+}
+
+var result = pubsub.createChannel("subscribe", options);
+if(result.metadata.status == "failure" && result.metadata.errorCode != "DUPLICATE_CHANNEL"){
+  channelStatus = "failure";
+}
+
+var group = {
+    groupName : "acme"
+}
+var groupResult = apsdb.callApi("SaveGroup", group, null);
+if(groupResult.metadata.status == "failure"){
+  groupStatus = "failure";
+}
+
+var user = {
+    login : "demo",
+    password: "demo",
+    name : "demo"
+}
+var userResult = apsdb.callApi("SaveUser", user, null);
+if(userResult.metadata.status == "failure"){
+  userStatus = "failure";
+}
+
+var configuration = {
+    "apsdb.optionalBindReferrer": "true", 
+    "apsdb.defaultTokenExpires": "86400", 
+    "apsdb.maximumTokenExpires": "86400", 
+    "apsdb.defaultTokenLifeTime": "86400", 
+    "apsdb.maximumTokenLifeTime": "604800"
+}
+var configResult = apsdb.callApi("SaveConfiguration", configuration, null);
+if(configResult.metadata.status == "failure"){
+  configStatus = "failure";
+}
+
+var jobHandler = [];
+
+var serviceName = "GitCheckout";
+
+// UIComponents
+var moduleName = "UIComponents";
+var path = 'UIComponents/UIComponents'; 
+var repo = "UIComponents";
+var owner = "scriptrdotio";
+var result = checkout(moduleName,path,repo,owner);
+jobHandler.push(result);
+
+response['jobHandler'] = jobHandler;
+
+// Login module
+var moduleName = "Login";
+var path = '/modules/login'; 
+var repo = "login";
+var owner = "scriptrdotio";
+var result = checkoutModule(moduleName,path,repo,owner);
+jobHandler.push(result);
+
+response['jobHandler'] = jobHandler;
+
+// Underscore module
+var moduleName = "Underscore";
+var path = '/scripts/modules/underscore'; 
+var repo = "scriptrConnectors";
+var owner = "scriptrdotio";
+var result = checkoutModule(moduleName,path,repo,owner);
+jobHandler.push(result);
+
+// Twilio module
+var moduleName = "Twilio";
+var path = ''; 
+var repo = "twilio";
+var owner = "scriptrdotio";
+var result = checkoutModule(moduleName,path,repo,owner);
+jobHandler.push(result);
+
+// Zoho module
+var moduleName = "Zoho";
+var path = ''; 
+var repo = "zoho";
+var owner = "scriptrdotio";
+var result = checkoutModule(moduleName,path,repo,owner);
+jobHandler.push(result);
+
+// Momentjs module
+var moduleName = "Momentjs";
+var path = '/scriptr'; 
+var repo = "moment";
+var owner = "scriptrdotio";
+var result = checkoutModule(moduleName,path,repo,owner);
+jobHandler.push(result);
+
+response['jobHandler'] = jobHandler;
+response['channelStatus'] = channelStatus;
+response['groupStatus'] = groupStatus;
+response['userStatus'] = userStatus; 
+response['configStatus'] = configStatus; 
+
+return response; 
+
+function checkoutModule(moduleName,path,repo,owner){
+  var params = {
+    "apsdb.repositoryPath" : path,
+    "apsdb.repositoryOwner" :owner,
+    "apsdb.repositoryName" :repo,
+    "apsdb.repositoryBranch" :"master",
+    "apsdb.purge":"true",
+    "apsdb.targetFolder":"modules/"+moduleName.toLowerCase(),
+    "apsdb.fileNamePattern":".*",
+    "apsdb.repositoryAccessToken":"62518ae63c8335401ceb7d99e689d01029e85f93"
+  }
+	var result =  apsdb.callApi(serviceName, params,null);
+  if(result.metadata.status == "success")
+	return {"module":moduleName, "status":"success" , "jobHandle": result.result.jobHandle};
+  else
+   return {"module":moduleName, "status":"failure" , "jobHandle": null};
+}
+
+function checkout(moduleName,path,rep,owner){
+  var params = {
+    "apsdb.repositoryPath" : path,
+    "apsdb.repositoryOwner" :owner,
+    "apsdb.repositoryName" :repo,
+    "apsdb.repositoryBranch" :"master",
+    "apsdb.purge":"true",
+    "apsdb.targetFolder": moduleName,
+    "apsdb.fileNamePattern":".*",
+    "apsdb.repositoryAccessToken":"62518ae63c8335401ceb7d99e689d01029e85f93"
+  }
+	var result =  apsdb.callApi(serviceName, params,null);
+  if(result.metadata.status == "success")
+	return {"module":moduleName, "status":"success" , "jobHandle": result.result.jobHandle};
+  else
+   return {"module":moduleName, "status":"failure" , "jobHandle": null};
+}
+
+
