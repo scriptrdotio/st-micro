@@ -2,7 +2,10 @@
 var zohoLib = require('/modules/zoho/lib/zoho');
 var config = require("./config");
 var _ = require("modules/underscore/underscore.js")._;
-var zoho = new zohoLib.zoho();
+
+var config = require("app/entities/config");
+
+var zoho = new zohoLib.zoho(config.zoho);
 /** 
  * For each decision table result (action) run the specified action (zoho ticket or email)
  * and build emails / content from template using underscore

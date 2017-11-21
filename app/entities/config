@@ -5,6 +5,12 @@ var twilio = {
     "to": ""
 }
 
+var zoho = {
+    supportAuthToken : "c21bf39323e816293665739bf20cd3bb",
+    portal : "waterquality",
+    department : "waterquality"
+}
+
 var email = {
     "TO": "",
     "FROM": "ST MICRO",
@@ -19,6 +25,6 @@ var watson = {
     };
     
     
-var accountKey = ""
-var accountSecret = ""
+var accountKey = "D1C54EFAD0"
+var accountSecret = "J56E96FA58B81CF9DBF3D514ACFB2F0B"
     
