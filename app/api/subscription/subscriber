@@ -73,20 +73,6 @@ try {
         entry.group = deviceDefinition.group;
         entry.source = deviceDefinition.source;
      }
-     var accel = {
-         x: data.Acc_X,
-         y: data.Acc_Y,
-         z: data.Acc_Z
-     }
-     entry["accelerometer"] = JSON.stringify(accel);
-    
-     var magnetic = {
-         x: data.MAG_X,
-         y: data.MAG_Y,
-         z: data.MAG_Z
-     }
-     entry["magnetic"] = JSON.stringify(magnetic);
-     
     
      var dataMapping = mapper.mapIt(data);
     _.extendOwn(entry, dataMapping);
