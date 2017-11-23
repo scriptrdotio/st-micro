@@ -10,7 +10,7 @@ var login = {
 var wssConfig = ["wsClientProvider",function (wsClientProvider) {
     wsClientProvider.setToken(token);
     wsClientProvider.setPublishChannel("requestChannel");
-    wsClientProvider.setSubscribeChannel("responseChannel_"+JSON.parse($.cookie('user')).groups);
+    wsClientProvider.setSubscribeChannel("responseChannel_"+JSON.parse(localStorage.user).groups);
 }];
 
 var httpsConfig = ["httpClientProvider",function (httpClientProvider) {

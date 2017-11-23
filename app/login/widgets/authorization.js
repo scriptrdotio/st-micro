@@ -106,6 +106,7 @@ $.widget( "scriptr.authorization", {
     },
   	
     logout:function(){
+        localStorage.removeItem("user");
     	$.removeCookie('token',{'path':'/'});
       	this.onTokenInvalid();
     }

@@ -6,7 +6,7 @@ myApp.controller('menuCtrl', function($scope, $timeout, httpClient, headerItemsJ
          $scope.$parent.vm.showList = true;
     }
     vm.headerItems = headerItemsJson;
-    vm.user = JSON.parse($.cookie('user')) //(atob(document.cookie.split("=")[1]).split(":")[1])
+    vm.user = JSON.parse(localStorage.user) //(atob(document.cookie.split("=")[1]).split(":")[1])
     vm.menuItems = menuItemsJson;
     vm.deviceKey = '';
     vm.realTimeSrc = $sce.trustAsResourceUrl('/app/view/html/views/dashboard/container_dashboard.html?deviceKey='+vm.deviceKey);
@@ -358,7 +358,7 @@ myApp.controller('menuCtrl', function($scope, $timeout, httpClient, headerItemsJ
 myApp.controller('notificationCtrl', function($scope, httpClient, headerItemsJson, menuItemsJson) {
     var vm = this;
     vm.headerItems = headerItemsJson;
-    vm.user = JSON.parse($.cookie('user')) //(atob(document.cookie.split("=")[1]).split(":")[1])
+    vm.user = JSON.parse(localStorage.user) //(atob(document.cookie.split("=")[1]).split(":")[1])
     vm.menuItems = menuItemsJson;
     vm.params = {} 
 	$scope.$parent.vm.showList = false;
@@ -483,7 +483,7 @@ myApp.controller('tamperedWithlCtrl', function($scope, httpClient, headerItemsJs
 myApp.controller('lockRuleCtrl', function($scope, httpClient, headerItemsJson, menuItemsJson, $sce, $routeParams, $timeout) {
     var vm = this;
     vm.headerItems = headerItemsJson;
-    vm.user =  JSON.parse($.cookie('user')) //(atob(document.cookie.split("=")[1]).split(":")[1]);
+    vm.user =  JSON.parse(localStorage.user) //(atob(document.cookie.split("=")[1]).split(":")[1]);
     vm.menuItems = menuItemsJson;
 	$scope.$parent.vm.showList = false;
     var params = {};

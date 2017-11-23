@@ -115,7 +115,12 @@
             return data.live.pressure;
         }
         vm.accelerometerFormatData = function(data){
-            return JSON.parse(data.live.accelerometer);
+            var accel = {
+                x: data.live.Acc_X,
+                y: data.live.Acc_Y,
+                z: data.live.Acc_Z
+            }
+            return accel;
         }
         vm.batteryFormatData = function(data){
             return data.live.batteryLevel;
