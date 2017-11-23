@@ -73,7 +73,7 @@ var result = checkout(moduleName,path,repo,owner);
 jobHandler.push(result);
 
 response['jobHandler'] = jobHandler;
-
+/*
 // Login module
 var moduleName = "Login";
 var path = '/modules/login'; 
@@ -83,7 +83,7 @@ var result = checkoutModule(moduleName,path,repo,owner);
 jobHandler.push(result);
 
 response['jobHandler'] = jobHandler;
-
+*/
 // Underscore module
 var moduleName = "Underscore";
 var path = '/scripts/modules/underscore'; 

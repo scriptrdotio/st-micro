@@ -94,7 +94,10 @@ function writeResponse(tokenResponse,id){
                       "result":{ "metadata":{
                           "status":"success"
                       }, 
-                                "result" :token
+                                "result" : {
+                                    token: token,
+                                    user: tokenResponse.result["user"]
+                                }
                                }
                   }
                  };
@@ -103,9 +106,9 @@ function writeResponse(tokenResponse,id){
 
 
     var cookieHeader = {"Set-Cookie": "token=" + token + ";expires=" + date.toUTCString()+ ";Path=/;Secure"};
-    var cookieHeader2 = {"Set-Cookie": "user=" + JSON.stringify(tokenResponse.result["user"]) + ";expires=" + date.toUTCString()+ ";Path=/;Secure"};
+   // var cookieHeader2 = {"Set-Cookie": "user=" + JSON.stringify(tokenResponse.result["user"]) + ";expires=" + date.toUTCString()+ ";Path=/;Secure"};
     response.addHeaders(cookieHeader);
-    response.addHeaders(cookieHeader2);
+  //  response.addHeaders(cookieHeader2);
     response.addHeaders({"access-control-allow-headers": "Set-Cookie"});
     response.addHeaders(configuration.crossDomainHeaders);
     response.setHeader("content-type","application/json;charset=UTF-8")

@@ -3,7 +3,14 @@
  *
  */
 var zohoLib =  require('/modules/zoho/lib/zoho');
-var zoho = new zohoLib.zoho();
+
+var config = {
+    supportAuthToken : "c21bf39323e816293665739bf20cd3bb",
+    portal : "waterquality",
+    department : "waterquality"
+}
+
+var zoho = new zohoLib.zoho(config);
 
 var firstName = request.parameters['firstName'];
 var lastName = request.parameters['lastName'];

@@ -1,0 +1,20 @@
+var params = {};
+if(request.body != null){
+	params = request.body;
+}else if(request.parameters.body){
+	params = request.parameters.body;
+} else {
+  params = request.parameters;
+}
+if(typeof params == 'string'){
+  	try{
+    	params = JSON.parse(params);   
+    }catch(e){
+      	return "INVALID OR MISSING PARAMETER";
+    }
+}
+
+var getUser = apsdb.callApi("GetUser",{"login":params.login},null);
+if(getUser.metadata.status == "success"){
+   return getUser.result["user"]
+}
